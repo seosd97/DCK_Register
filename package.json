@@ -8,13 +8,21 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "restify": "^8.5.1"
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-ejs": "^4.3.0",
+    "koa-router": "^9.1.0",
+    "mysql2": "^2.1.0",
+    "sequelize": "^6.3.0"
   },
   "scripts": {
     "start": "node ./src/index.js"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "eslint": "^7.4.0",
-    "prettier-eslint": "^11.0.0"
+    "eslint-plugin-html": "^6.0.2",
+    "prettier-eslint": "^11.0.0",
+    "sequelize-cli": "^6.2.0"
   }
 }
