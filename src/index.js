@@ -8,6 +8,7 @@ const bodyparser = require('koa-bodyparser');
 const render = require('koa-ejs');
 
 const models = require('../models').sequelize;
+const register_api = require('./apis/register_api');
 const path = require('path');
 
 const server = new Koa();
@@ -27,6 +28,9 @@ server.use(bodyparser());
 router.get('/', async (ctx) => {
   await ctx.render('register_form');
 });
+
+router.post('/api/register', register_api.registerSummoner);
+router.get('/api/summoners/:season_id', register_api.getSummoners);
 
 server.use(router.routes());
 server.use(router.allowedMethods());

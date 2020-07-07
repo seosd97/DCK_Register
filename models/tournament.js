@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     'Tournament',
     {
       name: DataTypes.STRING,
+      seasonId: DataTypes.INTEGER,
     },
     {}
   );

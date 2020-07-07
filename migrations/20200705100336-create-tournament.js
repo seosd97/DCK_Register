@@ -12,6 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: '',
       },
+      seasonId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

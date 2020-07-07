@@ -14,9 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Summoner.associate = function (models) {
-    Summoner.belongsToMany(models.Tournament, {
-      through: 'TournamentSummoners',
-    });
+    Summoner.belongsToMany(models.Tournament, { through: 'TournamentSummoners' });
   };
 
   return Summoner;
