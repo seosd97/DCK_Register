@@ -20,11 +20,11 @@ const test = {
 };
 
 const production = {
-  username: env.DB_USER_NAME,
-  password: env.DB_PASSWORD,
+  username: env.DB_USER_NAME_PROD,
+  password: env.DB_PASSWORD_PROD,
   database: env.DB_PROD,
-  host: env.DB_HOST,
-  port: env.DB_PORT,
+  host: env.DB_HOST_PROD,
+  port: env.DB_HOST_PORT,
   dialect: env.DB_DIALECT,
 };
 
