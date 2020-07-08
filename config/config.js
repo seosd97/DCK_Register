@@ -24,7 +24,7 @@ const production = {
   password: env.DB_PASSWORD_PROD,
   database: env.DB_PROD,
   host: env.DB_HOST_PROD,
-  port: env.DB_HOST_PORT,
+  port: env.DB_PORT_PROD,
   dialect: env.DB_DIALECT,
 };
 
