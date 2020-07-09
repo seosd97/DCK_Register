@@ -29,8 +29,10 @@ router.get('/', async (ctx) => {
   await ctx.render('register_form');
 });
 
-router.post('/api/register', register_api.registerSummoner);
+router.post('/api/summoners/register', register_api.registerSummoner);
 router.get('/api/summoners/:season_id', register_api.getSummoners);
+
+router.post('/api/tournaments/register', register_api.registerTournament);
 
 server.use(router.routes());
 server.use(router.allowedMethods());

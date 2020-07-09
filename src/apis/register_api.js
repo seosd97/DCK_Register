@@ -88,3 +88,32 @@ const makeSummonerDto = async (summonerData) => {
 
   return result;
 };
+
+// TODO : 추후 변경 예정
+exports.registerTournament = async (ctx) => {
+  const { seasonId } = ctx.request.body;
+
+  const tournamentData = await Tournament.findOne({
+    where: {
+      seasonId: seasonId,
+    },
+  });
+
+  if (tournamentData !== null) {
+    ctx.status = 400;
+    ctx.body = {
+      status: {
+        status_code: 400,
+        message: 'duplicate seasonId',
+      },
+    };
+
+    return;
+  }
+
+  await Tournament.create({
+    seasonId: seasonId,
+  });
+
+  ctx.status = 200;
+};
