@@ -36,14 +36,16 @@ exports.getSummoners = async (ctx) => {
     payload.push(summonerDto);
   }
 
+  ctx.status = 200;
   ctx.body = JSON.stringify(payload);
 };
 
 exports.registerSummoner = async (ctx) => {
-  const { summoner_id } = ctx.params;
-  const res = await riotApi.getSummonerData(summoner_id);
+  const { summonerId } = ctx.request.body;
+  const res = await riotApi.getSummonerData(summonerId);
 
   if (res.status >= 400) {
+    ctx.status = res.status;
     ctx.body = res.data;
     return;
   }
@@ -59,23 +61,24 @@ exports.registerSummoner = async (ctx) => {
   }
 
   let summonerData = await Summoner.findOne({
-    where: { sid: summoner_id },
+    where: { sid: summonerId },
   });
 
-  if (summonerData !== null) {
-    tournamentData.setSummoners([summonerData]);
-    return;
+  if (summonerData === null) {
+    const dto = res.data;
+    summonerData = await Summoner.create({
+      sid: dto.id,
+      name: dto.name,
+      puuid: dto.puuid,
+      accountId: dto.accountId,
+      profileIconId: dto.profileIconId,
+      summonerLevel: dto.summonerLevel,
+    });
   }
 
-  summonerData = res.data;
-  tournamentData.createSummoner({
-    sid: summonerData.id,
-    name: summonerData.name,
-    puuid: summonerData.puuid,
-    accountId: summonerData.accountId,
-    profileIconId: summonerData.profileIconId,
-    summonerLevel: summonerData.summonerLevel,
-  });
+  await tournamentData.setSummoners([summonerData]);
+
+  ctx.status = 200;
 };
 
 const makeSummonerDto = async (summonerData) => {
