@@ -1,9 +1,11 @@
 const riotApi = require('./riot_api');
 const { Summoner, Tournament, TournamentSummoner } = require('../../models');
-const summoner = require('../../models/summoner');
+const errorHandler = require('../errorHandler');
+const tournament = require('../../models/tournament');
 
 // TODO : 현재 시즌은 추후 계산하도록 작업
 const season = 4;
+const limitSummoner = 20;
 
 exports.getSummoners = async (ctx) => {
   const tournament = await Tournament.findOne({
@@ -13,12 +15,8 @@ exports.getSummoners = async (ctx) => {
   });
 
   if (tournament === null) {
-    ctx.body = {
-      status: {
-        status_code: 400,
-        message: 'invalid seasonId',
-      },
-    };
+    ctx.body = errorHandler.responseError(400, 'invalid season id');
+
     return;
   }
 
@@ -58,6 +56,21 @@ exports.registerSummoner = async (ctx) => {
 
   if (tournamentData === null) {
     tournamentData = await Tournament.create({ name: `DCK SEASON ${season}`, seasonId: season });
+  }
+
+  const summonerCount = await tournamentData.countSummoners();
+  if (summonerCount >= limitSummoner) {
+    ctx.body = errorHandler.responseError(401, 'the limit summoner has been exceeded');
+    return;
+  }
+
+  const dupSummoner = await tournamentData.getSummoners({
+    sid: summonerId,
+  });
+
+  if (dupSummoner !== null) {
+    ctx.body = errorHandler.responseError(400, 'duplicate summoner id');
+    return;
   }
 
   let summonerData = await Summoner.findOne({
@@ -101,12 +114,7 @@ exports.registerTournament = async (ctx) => {
 
   if (tournamentData !== null) {
     ctx.status = 400;
-    ctx.body = {
-      status: {
-        status_code: 400,
-        message: 'duplicate seasonId',
-      },
-    };
+    ctx.body = errorHandler.responseError(400, 'duplicate season id');
 
     return;
   }
