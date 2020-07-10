@@ -20,17 +20,21 @@ exports.getSummoners = async (ctx) => {
     return;
   }
 
-  const summoners = await tournament.getSummoners({});
+  const summoners = await tournament.getSummoners({
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+    joinTableAttributes: [],
+    raw: true,
+  });
 
-  console.log(summoners.length);
+  console.log(summoners);
 
   let payload = [];
   for (let i in summoners) {
     const summonerDto = await makeSummonerDto(summoners[i]);
     payload.push(summonerDto);
   }
-
-  // console.log(payload);
 
   ctx.status = 200;
   ctx.body = payload;
@@ -89,7 +93,7 @@ exports.registerSummoner = async (ctx) => {
     });
   }
 
-  await tournamentData.addSummoners(summonerData);
+  await tournamentData.addSummoners([summonerData]);
 
   ctx.status = 200;
 };
