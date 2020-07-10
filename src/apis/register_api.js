@@ -65,8 +65,12 @@ exports.registerSummoner = async (ctx) => {
   }
 
   const dupSummoner = await tournamentData.getSummoners({
-    sid: summonerId,
+    where: {
+      sid: summonerId,
+    },
   });
+
+  console.log(dupSummoner);
 
   if (Array.isArray(dupSummoner) && dupSummoner.length) {
     ctx.body = errorHandler.responseError(400, 'duplicate summoner id');
