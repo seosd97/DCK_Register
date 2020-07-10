@@ -20,13 +20,9 @@ exports.getSummoners = async (ctx) => {
     return;
   }
 
-  const summoners = await tournament.getSummoners({
-    attributes: {
-      exclude: ['createdAt', 'updatedAt'],
-    },
-    joinTableAttributes: [],
-    raw: true,
-  });
+  const summoners = await tournament.getSummoners({});
+
+  console.log(summoners.length);
 
   let payload = [];
   for (let i in summoners) {
@@ -34,8 +30,10 @@ exports.getSummoners = async (ctx) => {
     payload.push(summonerDto);
   }
 
+  // console.log(payload);
+
   ctx.status = 200;
-  ctx.body = JSON.stringify(payload);
+  ctx.body = payload;
 };
 
 exports.registerSummoner = async (ctx) => {
@@ -70,8 +68,6 @@ exports.registerSummoner = async (ctx) => {
     },
   });
 
-  console.log(dupSummoner);
-
   if (Array.isArray(dupSummoner) && dupSummoner.length) {
     ctx.body = errorHandler.responseError(400, 'duplicate summoner id');
     return;
@@ -93,7 +89,7 @@ exports.registerSummoner = async (ctx) => {
     });
   }
 
-  await tournamentData.setSummoners([summonerData]);
+  await tournamentData.addSummoners(summonerData);
 
   ctx.status = 200;
 };
