@@ -68,7 +68,7 @@ exports.registerSummoner = async (ctx) => {
     sid: summonerId,
   });
 
-  if (dupSummoner !== null) {
+  if (Array.isArray(dupSummoner) && dupSummoner.length) {
     ctx.body = errorHandler.responseError(400, 'duplicate summoner id');
     return;
   }
@@ -104,7 +104,7 @@ const makeSummonerDto = async (summonerData) => {
 
 // TODO : 추후 변경 예정
 exports.registerTournament = async (ctx) => {
-  const { seasonId } = ctx.request.body;
+  const { seasonId, tournamentName } = ctx.request.body;
 
   const tournamentData = await Tournament.findOne({
     where: {
@@ -121,6 +121,7 @@ exports.registerTournament = async (ctx) => {
 
   await Tournament.create({
     seasonId: seasonId,
+    name: tournamentName,
   });
 
   ctx.status = 200;
