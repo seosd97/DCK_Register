@@ -94,6 +94,23 @@ exports.registerSummoner = async (ctx) => {
   ctx.status = 200;
 };
 
+exports.unregisterSummoner = async (ctx) => {
+  const { summonerId } = ctx.request.body;
+
+  try {
+    await Summoner.destroy({
+      where: {
+        sid: summonerId,
+      },
+    });
+
+    ctx.status = 200;
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = errorHandler.responseError(400, err);
+  }
+};
+
 const makeSummonerDto = async (summonerData) => {
   let result = summonerData;
   const leagueData = await riotApi.getLeagueData(summonerData.sid);

@@ -30,6 +30,7 @@ router.get('/', async (ctx) => {
 });
 
 router.post('/api/summoners/register', register_api.registerSummoner);
+router.post('/api/summoners/unregister', register_api.unregisterSummoner);
 router.get('/api/summoners/:season_id', register_api.getSummoners);
 
 router.post('/api/tournaments/register', register_api.registerTournament);
