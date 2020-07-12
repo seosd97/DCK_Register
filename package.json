@@ -13,6 +13,7 @@
     "koa-bodyparser": "^4.3.0",
     "koa-ejs": "^4.3.0",
     "koa-router": "^9.1.0",
+    "koa-static": "^5.0.0",
     "mysql2": "^2.1.0",
     "sequelize": "^5.21.6"
   },

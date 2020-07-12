@@ -1,23 +1,27 @@
 const riotApi = require('./riot_api');
-const { Summoner, Tournament, TournamentSummoner } = require('../../models');
+const { Summoner, Tournament } = require('../../models');
 const errorHandler = require('../errorHandler');
-const tournament = require('../../models/tournament');
 
 // TODO : 현재 시즌은 추후 계산하도록 작업
 const season = 4;
 const limitSummoner = 20;
 
 exports.getSummoners = async (ctx) => {
+  const payload = await this.getSummonerDTOs(ctx.params.season_id);
+
+  ctx.status = 200;
+  ctx.body = payload;
+};
+
+exports.getSummonerDTOs = async (seasonId) => {
   const tournament = await Tournament.findOne({
     where: {
-      seasonId: ctx.params.season_id,
+      seasonId: seasonId,
     },
   });
 
   if (tournament === null) {
-    ctx.body = errorHandler.responseError(400, 'invalid season id');
-
-    return;
+    return [];
   }
 
   const summoners = await tournament.getSummoners({
@@ -28,16 +32,13 @@ exports.getSummoners = async (ctx) => {
     raw: true,
   });
 
-  console.log(summoners);
-
   let payload = [];
   for (let i in summoners) {
     const summonerDto = await makeSummonerDto(summoners[i]);
     payload.push(summonerDto);
   }
 
-  ctx.status = 200;
-  ctx.body = payload;
+  return payload;
 };
 
 exports.registerSummoner = async (ctx) => {
@@ -96,6 +97,7 @@ exports.registerSummoner = async (ctx) => {
   await tournamentData.addSummoners([summonerData]);
 
   ctx.status = 200;
+  ctx.body = errorHandler.responseError(200, 'OK');
 };
 
 exports.unregisterSummoner = async (ctx) => {
@@ -109,6 +111,7 @@ exports.unregisterSummoner = async (ctx) => {
     });
 
     ctx.status = 200;
+    ctx.body = errorHandler.responseError(200, 'OK');
   } catch (err) {
     ctx.status = 400;
     ctx.body = errorHandler.responseError(400, err);
@@ -116,11 +119,21 @@ exports.unregisterSummoner = async (ctx) => {
 };
 
 const makeSummonerDto = async (summonerData) => {
-  let result = summonerData;
+  let payload = summonerData;
   const leagueData = await riotApi.getLeagueData(summonerData.sid);
-  result.leagueDto = leagueData.data;
 
-  return result;
+  let leagueDto = null;
+  for (let i in leagueData.data) {
+    const dto = leagueData.data[i];
+    if (dto.queueType === 'RANKED_SOLO_5x5') {
+      leagueDto = dto;
+      break;
+    }
+  }
+
+  payload.leagueDto = leagueData.data;
+
+  return payload;
 };
 
 // TODO : 추후 변경 예정
@@ -146,4 +159,5 @@ exports.registerTournament = async (ctx) => {
   });
 
   ctx.status = 200;
+  ctx.body = errorHandler.responseError(200, 'OK');
 };

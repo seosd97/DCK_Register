@@ -6,6 +6,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyparser = require('koa-bodyparser');
 const render = require('koa-ejs');
+const serve = require('koa-static');
 
 const models = require('../models').sequelize;
 const register_api = require('./apis/register_api');
@@ -21,12 +22,14 @@ render(server, {
   viewExt: 'html',
   cache: false,
   debug: false,
+  // async: true,
 });
 
 server.use(bodyparser());
 
 router.get('/', async (ctx) => {
-  await ctx.render('register_form');
+  const summoners = await register_api.getSummonerDTOs(4);
+  await ctx.render('index', { summoners: summoners });
 });
 
 router.post('/api/summoners/register', register_api.registerSummoner);
@@ -37,6 +40,8 @@ router.post('/api/tournaments/register', register_api.registerTournament);
 
 server.use(router.routes());
 server.use(router.allowedMethods());
+
+server.use(serve('./public'));
 
 models
   .sync({ alter: true })

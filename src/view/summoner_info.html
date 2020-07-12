@@ -1,0 +1,16 @@
+<section>
+    <% summoners.forEach((s) => { %>
+    <% const leagueDto = s.leagueDto.find(l => { return l.queueType === "RANKED_SOLO_5x5" }); %>
+    <% const tierName = leagueDto === null ? "undefined" : leagueDto.tier.toLowerCase() %>
+    <% const winRate = (leagueDto.wins/(leagueDto.wins + leagueDto.losses) * 100).toFixed(1) %>
+    <div>
+        <img class="tier-icon" src=<%= `images/ranked-emblems/Emblem_${tierName}.png` %>
+            alt=<%= `Emblem_${tierName}` %>>
+        <%= s.name %>
+        <div>
+            <%= leagueDto.wins %> 승 <%= leagueDto.losses %> 패
+            (<%= winRate %>%)
+        </div>
+    </div>
+    <% }) %>
+</section>

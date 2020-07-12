@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       accountId: DataTypes.STRING,
       profileIconId: DataTypes.INTEGER,
       summonerLevel: DataTypes.INTEGER,
+      desiredPosition: DataTypes.INTEGER,
     },
     {}
   );
