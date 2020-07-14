@@ -16,6 +16,20 @@ exports.getSummonerData = async (id) => {
   }
 };
 
+exports.getSummonerDataByName = async (name) => {
+  try {
+    const data = await Axios.get(`${endpoint}summoner/v4/summoners/${name}`, {
+      headers: {
+        'X-Riot-Token': process.env.API_KEY,
+      },
+    });
+
+    return data;
+  } catch (err) {
+    return err.response;
+  }
+};
+
 exports.getLeagueData = async (id) => {
   try {
     const data = await Axios.get(`${endpoint}league/v4/entries/by-summoner/${id}`, {

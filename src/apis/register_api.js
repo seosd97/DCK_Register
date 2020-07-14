@@ -6,6 +6,32 @@ const errorHandler = require('../errorHandler');
 const season = 4;
 const limitSummoner = 20;
 
+exports.getSummonerByName = async (ctx) => {
+  let summoner = await Summoner.findOne({
+    where: {
+      name: ctx.params.name,
+    },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+    },
+  });
+
+  if (summoner === null) {
+    const res = await riotApi.getSummonerDataByName(ctx.params.summoner_id);
+
+    if (res.status >= 400) {
+      ctx.status = res.status;
+      ctx.body = res.data;
+      return;
+    }
+
+    summoner = res.data;
+  }
+
+  ctx.status = 200;
+  ctx.body = summoner;
+};
+
 exports.getSummoners = async (ctx) => {
   const payload = await this.getSummonerDTOs(ctx.params.season_id);
 
