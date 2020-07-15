@@ -52,3 +52,7 @@ html, body {
 .t-ac {
     text-align: center;
 }
+
+.disabled { 
+    display: none;
+}

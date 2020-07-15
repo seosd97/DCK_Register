@@ -14,6 +14,7 @@ exports.getSummonerByName = async (ctx) => {
     attributes: {
       exclude: ['createdAt', 'updatedAt'],
     },
+    raw: true,
   });
 
   if (summoner === null) {
@@ -29,7 +30,7 @@ exports.getSummonerByName = async (ctx) => {
   }
 
   ctx.status = 200;
-  ctx.body = summoner;
+  ctx.body = await makeSummonerDto(summoner);
 };
 
 exports.getSummoners = async (ctx) => {

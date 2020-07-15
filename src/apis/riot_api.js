@@ -18,7 +18,7 @@ exports.getSummonerData = async (id) => {
 
 exports.getSummonerDataByName = async (name) => {
   try {
-    const data = await Axios.get(`${endpoint}summoner/v4/summoners/${name}`, {
+    const data = await Axios.get(`${endpoint}summoner/v4/summoners/by_name/${name}`, {
       headers: {
         'X-Riot-Token': process.env.API_KEY,
       },

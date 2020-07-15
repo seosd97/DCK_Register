@@ -1,5 +1,8 @@
 <section class="register-section w-100">
     <div class="flex-col flex-ac flex-jc h-100">
+        <div id="register-preview" class="disabled">
+            <%- include('summoner_info.html', {summonerData: null, direction: "col"}) %>
+        </div>
         <div id="search-form">
             <input type="text" id="search-textbox" placeholder="Enter summoner name" />
             <input type="button" id="search-button" value="search" />

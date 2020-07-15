@@ -1,0 +1,7 @@
+<section class="flex-col flex-ac summoner-info-container">
+    <% summoners.forEach((s) => { %>
+    <div class="flex-row flex-ac w-100 summoner-info-elem">
+        <%- include('summoner_info.html', {summonerData: s, direction: "row"}) %>
+    </div>
+    <% }) %>
+</section>
