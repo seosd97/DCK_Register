@@ -24,6 +24,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.4.0",
     "eslint-plugin-html": "^6.0.2",
+    "forever": "^3.0.0",
     "prettier-eslint": "^11.0.0",
     "sequelize-cli": "^5.5.1"
   }
