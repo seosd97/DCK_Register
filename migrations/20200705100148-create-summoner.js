@@ -26,11 +26,9 @@ module.exports = {
       },
       profileIconId: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
       },
       summonerLevel: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
       },
       createdAt: {
         allowNull: false,

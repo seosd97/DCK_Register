@@ -79,14 +79,11 @@ const invalidateSummonerInfo = (data) => {
     return null;
   }
 
-  const leagueDto = data.leagueDto.find((l) => {
-    return l.queueType === 'RANKED_SOLO_5x5';
-  });
-  const tierName = leagueDto === undefined ? 'undefined' : leagueDto.tier.toLowerCase();
+  const tierName = data.leagueDto === undefined ? 'undefined' : data.leagueDto.tier.toLowerCase();
   const winRate =
-    leagueDto === undefined
+    data.leagueDto === undefined
       ? '-'
-      : ((leagueDto.wins / (leagueDto.wins + leagueDto.losses)) * 100).toFixed(1);
+      : ((data.leagueDto.wins / (data.leagueDto.wins + data.leagueDto.losses)) * 100).toFixed(1);
 
   const tierImg = summonerInfo.querySelector('.tier-icon');
   tierImg.setAttribute('src', `images/ranked-emblems/Emblem_${tierName}.png`);
@@ -96,11 +93,13 @@ const invalidateSummonerInfo = (data) => {
 
   const summonerTier = summonerInfo.querySelector('.summoner-tier');
   summonerTier.innerText =
-    leagueDto === undefined ? 'unranked' : `${leagueDto.tier} ${leagueDto.rank}`;
+    data.leagueDto === undefined ? 'unranked' : `${data.leagueDto.tier} ${data.leagueDto.rank}`;
 
   const summonerWinRate = summonerInfo.querySelector('.summoner-winrate');
   summonerWinRate.innerText =
-    leagueDto === undefined ? winRate : `${leagueDto.wins} 승 ${leagueDto.losses} 패 (${winRate}%)`;
+    data.leagueDto === undefined
+      ? winRate
+      : `${data.leagueDto.wins} 승 ${data.leagueDto.losses} 패 (${winRate}%)`;
 
   summonerInfo.classList.remove('disabled');
 };

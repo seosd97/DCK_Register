@@ -10,7 +10,6 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        defaultValue: '',
       },
       seasonId: {
         type: Sequelize.INTEGER,

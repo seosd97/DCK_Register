@@ -14,7 +14,6 @@ exports.getSummonerByName = async (ctx) => {
     attributes: {
       exclude: ['createdAt', 'updatedAt'],
     },
-    raw: true,
   });
 
   if (summoner === null) {
@@ -26,7 +25,9 @@ exports.getSummonerByName = async (ctx) => {
       return;
     }
 
-    summoner = res.data;
+    ctx.status = 200;
+    ctx.body = await makeSummonerDto(res.data);
+    return;
   }
 
   ctx.status = 200;
@@ -56,7 +57,6 @@ exports.getSummonerDTOs = async (seasonId) => {
       exclude: ['createdAt', 'updatedAt'],
     },
     joinTableAttributes: [],
-    raw: true,
   });
 
   let payload = [];
@@ -69,14 +69,7 @@ exports.getSummonerDTOs = async (seasonId) => {
 };
 
 exports.registerSummoner = async (ctx) => {
-  const { summonerId } = ctx.request.body;
-  const res = await riotApi.getSummonerData(summonerId);
-
-  if (res.status >= 400) {
-    ctx.status = res.status;
-    ctx.body = res.data;
-    return;
-  }
+  const reqData = ctx.request.body;
 
   let tournamentData = await Tournament.findOne({
     where: {
@@ -96,7 +89,7 @@ exports.registerSummoner = async (ctx) => {
 
   const dupSummoner = await tournamentData.getSummoners({
     where: {
-      sid: summonerId,
+      sid: reqData.summonerId,
     },
   });
 
@@ -106,10 +99,18 @@ exports.registerSummoner = async (ctx) => {
   }
 
   let summonerData = await Summoner.findOne({
-    where: { sid: summonerId },
+    where: { sid: reqData.summonerId },
   });
 
   if (summonerData === null) {
+    const res = await riotApi.getSummonerData(reqData.summonerId);
+
+    if (res.status >= 400) {
+      ctx.status = res.status;
+      ctx.body = res.data;
+      return;
+    }
+
     const dto = res.data;
     summonerData = await Summoner.create({
       sid: dto.id,
@@ -118,7 +119,36 @@ exports.registerSummoner = async (ctx) => {
       accountId: dto.accountId,
       profileIconId: dto.profileIconId,
       summonerLevel: dto.summonerLevel,
+      desiredPosition: reqData.position,
+      password_digest: reqData.password,
     });
+
+    const leagueDto = await riotApi.getLeagueData(dto.id);
+    if (leagueDto.status >= 400) {
+      ctx.status = leagueDto.status;
+      ctx.body = leagueDto.data;
+      return;
+    }
+
+    for (let i in leagueDto.data) {
+      const leagueData = leagueDto.data[i];
+
+      await summonerData.createLeague({
+        leagueId: leagueData.leagueId,
+        queueType: leagueData.queueType,
+        tier: leagueData.tier,
+        rank: leagueData.rank,
+        sid: leagueData.summonerId,
+        summonerName: leagueData.summonerName,
+        leaguePoints: leagueData.leaguePoints,
+        wins: leagueData.wins,
+        losses: leagueData.losses,
+        veteran: leagueData.veteran,
+        inactive: leagueData.inactive,
+        freshBlood: leagueData.freshBlood,
+        hotStreak: leagueData.hotStreak,
+      });
+    }
   }
 
   await tournamentData.addSummoners([summonerData]);
@@ -146,19 +176,19 @@ exports.unregisterSummoner = async (ctx) => {
 };
 
 const makeSummonerDto = async (summonerData) => {
-  let payload = summonerData;
-  const leagueData = await riotApi.getLeagueData(summonerData.sid);
+  let payload = summonerData.toJSON();
+  const leagueData = await summonerData.getLeagues();
 
   let leagueDto = null;
-  for (let i in leagueData.data) {
-    const dto = leagueData.data[i];
+  for (let i in leagueData) {
+    const dto = leagueData[i];
     if (dto.queueType === 'RANKED_SOLO_5x5') {
-      leagueDto = dto;
+      leagueDto = dto.toJSON();
       break;
     }
   }
 
-  payload.leagueDto = leagueData.data;
+  payload.leagueDto = leagueDto;
 
   return payload;
 };

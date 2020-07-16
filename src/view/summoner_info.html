@@ -1,15 +1,15 @@
-<% const leagueDto = summonerData === null ? null : summonerData.leagueDto.find(l => { return l.queueType === "RANKED_SOLO_5x5" }); %>
+<% const leagueDto = summonerData == null ? null : summonerData.leagueDto; %>
 <% const tierName = leagueDto == null ? "undefined" : leagueDto.tier.toLowerCase() %>
 <% const winRate = leagueDto == null ? "-" : (leagueDto.wins/(leagueDto.wins + leagueDto.losses) * 100).toFixed(1) %>
 
 <div class="<%= (direction === 'col' ? 'flex-col' : 'flex-row') + ' flex-ac' %>">
     <img class="tier-icon" src=<%= `images/ranked-emblems/Emblem_${tierName}.png` %> alt=<%= `Emblem_${tierName}` %>>
     <div class="<%= direction === 'col' ? 't-ac' : '' %>">
-        <div class="t-bold summoner-name"><%= summonerData !== null && summonerData.name %></div>
-        <div class="t-bold summoner-tier"><%= leagueDto === null ? "unranked" : `${leagueDto.tier} ${leagueDto.rank}` %>
+        <div class="t-bold summoner-name"><%= leagueDto != null && leagueDto.summonerName %></div>
+        <div class="t-bold summoner-tier"><%= leagueDto == null ? "unranked" : `${leagueDto.tier} ${leagueDto.rank}` %>
         </div>
         <div class="summoner-winrate">
-            <% if (leagueDto === null) { %>
+            <% if (leagueDto == null) { %>
             <%= winRate %>
             <% } else { %>
             <%= leagueDto.wins %> 승

@@ -5,7 +5,6 @@ module.exports = {
     return queryInterface.addColumn('Summoners', 'desiredPosition', {
       type: Sequelize.INTEGER,
       allowNull: false,
-      defaultValue: 0,
     });
   },
 

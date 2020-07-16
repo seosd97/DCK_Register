@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Tournament = sequelize.define(
     'Tournament',
     {
-      name: DataTypes.STRING,
+      name: { type: DataTypes.STRING, defaultValue: '' },
       seasonId: DataTypes.INTEGER,
     },
     {}
