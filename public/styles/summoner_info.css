@@ -9,6 +9,12 @@
     background-color: #fcfcfc;
 }
 
+.summoner-info-posicon {
+    width: 50px;
+    height: 50px;
+    margin: 8px;
+}
+
 .summoner-info-elem {
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     padding: 25px 8px;
@@ -23,6 +29,10 @@
 .tier-icon {
     width: 100px;
     height: 100px;
+}
+
+.summoner-desc {
+    margin-left: 10px;
 }
 
 .summoner-name {

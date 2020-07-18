@@ -18,7 +18,7 @@ exports.getSummonerData = async (id) => {
 
 exports.getSummonerDataByName = async (name) => {
   try {
-    const data = await Axios.get(`${endpoint}summoner/v4/summoners/by_name/${name}`, {
+    const data = await Axios.get(`${endpoint}summoner/v4/summoners/by-name/${encodeURI(name)}`, {
       headers: {
         'X-Riot-Token': process.env.API_KEY,
       },
@@ -26,6 +26,7 @@ exports.getSummonerDataByName = async (name) => {
 
     return data;
   } catch (err) {
+    console.log(err);
     return err.response;
   }
 };

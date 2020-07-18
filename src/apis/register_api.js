@@ -6,32 +6,33 @@ const errorHandler = require('../errorHandler');
 const season = 4;
 const limitSummoner = 20;
 
-exports.getSummonerByName = async (ctx) => {
-  let summoner = await Summoner.findOne({
-    where: {
-      name: ctx.params.name,
-    },
-    attributes: {
-      exclude: ['createdAt', 'updatedAt'],
-    },
-  });
+exports.getSummonerByNameFromRiot = async (ctx) => {
+  const res = await riotApi.getSummonerDataByName(ctx.params.name);
 
-  if (summoner === null) {
-    const res = await riotApi.getSummonerDataByName(ctx.params.summoner_id);
-
-    if (res.status >= 400) {
-      ctx.status = res.status;
-      ctx.body = res.data;
-      return;
-    }
-
-    ctx.status = 200;
-    ctx.body = await makeSummonerDto(res.data);
+  if (res.status >= 400) {
+    ctx.status = res.status;
+    ctx.body = res.data;
     return;
   }
 
+  let payload = res.data;
+  const leagueDto = await riotApi.getLeagueData(res.data.id);
+  if (leagueDto.status >= 400) {
+    ctx.status = leagueDto.status;
+    ctx.body = leagueDto.data;
+    return;
+  }
+
+  const soloRank = await leagueDto.data.find((l) => {
+    return l.queueType === 'RANKED_SOLO_5x5';
+  });
+
+  if (soloRank !== undefined) {
+    payload.leagueDto = soloRank;
+  }
+
   ctx.status = 200;
-  ctx.body = await makeSummonerDto(summoner);
+  ctx.body = payload;
 };
 
 exports.getSummoners = async (ctx) => {
@@ -83,6 +84,7 @@ exports.registerSummoner = async (ctx) => {
 
   const summonerCount = await tournamentData.countSummoners();
   if (summonerCount >= limitSummoner) {
+    ctx.status = 401;
     ctx.body = errorHandler.responseError(401, 'the limit summoner has been exceeded');
     return;
   }
@@ -94,6 +96,7 @@ exports.registerSummoner = async (ctx) => {
   });
 
   if (Array.isArray(dupSummoner) && dupSummoner.length) {
+    ctx.status = 400;
     ctx.body = errorHandler.responseError(400, 'duplicate summoner id');
     return;
   }

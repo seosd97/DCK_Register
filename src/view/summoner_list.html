@@ -1,6 +1,8 @@
-<section class="flex-col flex-ac summoner-info-container">
+<section class="flex-col flex-ac summoner-info-container move-up">
     <% summoners.forEach((s) => { %>
     <div class="flex-row flex-ac w-100 summoner-info-elem">
+        <img class="summoner-info-posicon" src=<%=`images/positions/position_icon_${s.desiredPosition}.png`%>
+            alt=<%=`position_${s.desiredPsition}`%>>
         <%- include('summoner_info.html', {summonerData: s, direction: "row"}) %>
     </div>
     <% }) %>

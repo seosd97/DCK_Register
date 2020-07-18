@@ -2,6 +2,7 @@ const searchForm = document.getElementById('search-form');
 const searchBox = document.getElementById('search-textbox');
 const searchButton = document.getElementById('search-button');
 const summonerInfo = document.getElementById('register-preview');
+const registerSubmit = document.getElementById('register-submit');
 
 let curSummoner = null;
 
@@ -20,10 +21,12 @@ searchButton.onclick = (e) => {
   searchButton.disabled = true;
   setErrorText('');
 
-  fetch(`http://localhost:8080/api/summoners/by_name/${name}`, {
+  fetch(`http://localhost:8080/api/lol/summoners/by_name/${encodeURI(name)}`, {
     method: 'GET',
   })
     .then(async (res) => {
+      searchButton.disabled = false;
+
       if (res.status >= 400) {
         setErrorText(res.statusText);
         return;
@@ -33,19 +36,48 @@ searchButton.onclick = (e) => {
       invalidateSummonerInfo(data);
 
       curSummoner = data;
-
+    })
+    .catch((err) => {
       searchButton.disabled = false;
+
+      console.log(err);
+    });
+};
+
+registerSubmit.onclick = (e) => {
+  const passwordField = document.querySelector('#password-field');
+  const desiredPosition = document.querySelector('input[name="radio-position"]:checked');
+
+  const payload = {
+    summonerId: curSummoner.id,
+    password: '',
+    position: desiredPosition.value,
+  };
+
+  fetch('http://localhost:8080/api/summoners/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => {
+      res.json().then((j) => {});
     })
     .catch((err) => {
       console.log(err);
-
-      searchButton.disabled = false;
     });
 };
 
 const nameValidator = (name) => {
   if (name == null || name === '') {
     setErrorText('소환사명을 입력해주세요.');
+    return false;
+  }
+
+  const result = name.match(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g);
+  if (result !== null) {
+    setErrorText('특수문자를 사용 할 수 없습니다.');
     return false;
   }
 
@@ -102,4 +134,5 @@ const invalidateSummonerInfo = (data) => {
       : `${data.leagueDto.wins} 승 ${data.leagueDto.losses} 패 (${winRate}%)`;
 
   summonerInfo.classList.remove('disabled');
+  summonerInfo.classList.add('fade-in');
 };
