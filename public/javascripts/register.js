@@ -5,11 +5,6 @@ const summonerInfo = document.getElementById('register-preview');
 const registerSubmit = document.getElementById('register-submit');
 const previousButton = document.getElementById('previous-btn');
 
-const endpoint =
-  process.env.NODE_ENV === 'production'
-    ? 'http://54.180.192.221:8080/api/'
-    : 'http://localhost:8080/api/';
-
 let curSummoner = null;
 
 searchButton.onclick = (e) => {
@@ -27,7 +22,7 @@ searchButton.onclick = (e) => {
   searchButton.disabled = true;
   setErrorText('');
 
-  fetch(`${endpoint}lol/summoners/by_name/${encodeURI(name)}`, {
+  fetch(`/lol/summoners/by_name/${encodeURI(name)}`, {
     method: 'GET',
   })
     .then(async (res) => {
@@ -97,7 +92,7 @@ registerSubmit.onclick = (e) => {
 };
 
 const requestRegister = async (data) => {
-  return fetch(`${endpoint}summoners/register`, {
+  return fetch('/summoners/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -107,7 +102,7 @@ const requestRegister = async (data) => {
 };
 
 const requestUnRegister = async (data) => {
-  return fetch(`${endpoint}summoners/unregister`, {
+  return fetch('/summoners/unregister', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
