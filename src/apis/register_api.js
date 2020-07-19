@@ -6,29 +6,20 @@ const errorHandler = require('../errorHandler');
 const season = 4;
 const limitSummoner = 20;
 
-exports.getSummonerByNameFromRiot = async (ctx) => {
-  const res = await riotApi.getSummonerDataByName(ctx.params.name);
-
-  if (res.status >= 400) {
-    ctx.status = res.status;
-    ctx.body = res.data;
-    return;
-  }
-
-  let payload = res.data;
-  const leagueDto = await riotApi.getLeagueData(res.data.id);
-  if (leagueDto.status >= 400) {
-    ctx.status = leagueDto.status;
-    ctx.body = leagueDto.data;
-    return;
-  }
-
-  const soloRank = await leagueDto.data.find((l) => {
-    return l.queueType === 'RANKED_SOLO_5x5';
+exports.getSummonerByName = async (ctx) => {
+  const summoner = await Summoner.findOne({
+    where: {
+      name: ctx.params.name,
+    },
   });
 
-  if (soloRank !== undefined) {
-    payload.leagueDto = soloRank;
+  let payload = {};
+  if (summoner === null) {
+    payload = await makeSummonerDtoByNameFromRiot(ctx.params.name);
+    payload.alreadyRegistered = false;
+  } else {
+    payload = await makeSummonerDto(summoner);
+    payload.alreadyRegistered = true;
   }
 
   ctx.status = 200;
@@ -192,6 +183,30 @@ const makeSummonerDto = async (summonerData) => {
   }
 
   payload.leagueDto = leagueDto;
+
+  return payload;
+};
+
+const makeSummonerDtoByNameFromRiot = async (name) => {
+  const res = await riotApi.getSummonerDataByName(name);
+
+  if (res.status >= 400) {
+    return errorHandler(res.status, res.data);
+  }
+
+  let payload = res.data;
+  const leagueDto = await riotApi.getLeagueData(res.data.id);
+  if (leagueDto.status >= 400) {
+    return errorHandler(res.status, res.data);
+  }
+
+  const soloRank = await leagueDto.data.find((l) => {
+    return l.queueType === 'RANKED_SOLO_5x5';
+  });
+
+  if (soloRank !== undefined) {
+    payload.leagueDto = soloRank;
+  }
 
   return payload;
 };

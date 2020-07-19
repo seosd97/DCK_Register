@@ -10,8 +10,8 @@
 }
 
 .summoner-info-posicon {
-    width: 50px;
-    height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     margin: 8px;
 }
 
@@ -19,7 +19,6 @@
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     padding: 25px 8px;
     box-sizing: inherit;
-    flex-wrap: wrap;
 }
 
 .summoner-info-elem:last-child {

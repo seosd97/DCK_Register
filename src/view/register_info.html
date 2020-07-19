@@ -1,8 +1,11 @@
-<section class="flex-row flex-ac flex-jc flex-wrap">
+<section class="flex-col flex-ac flex-jc flex-wrap">
     <%- include('summoner_info.html', { direction: 'col' }) %>
     <div class="register-option-form flex-col flex-ac">
         <%- include('position_select_radio.html') %>
         <input type="password" id="password-field" placeholder="password" />
-        <input type="button" id="register-submit" value="등록하기" />
+        <div class="flex-row flex-ac flex-je w-100">
+            <input type="button" id="previous-btn" value="뒤로" />
+            <input type="button" id="register-submit" value="등록" />
+        </div>
     </div>
 </section>

@@ -49,6 +49,7 @@
         ],
         "no-undef": [
             "warn"
-        ]
+        ],
+        "no-useless-escape": "warn"
     }
 }

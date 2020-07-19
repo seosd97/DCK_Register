@@ -36,7 +36,7 @@ router.post('/api/summoners/register', register_api.registerSummoner);
 router.post('/api/summoners/unregister', register_api.unregisterSummoner);
 router.get('/api/summoners/:season_id', register_api.getSummoners);
 
-router.get('/api/lol/summoners/by_name/:name', register_api.getSummonerByNameFromRiot);
+router.get('/api/lol/summoners/by_name/:name', register_api.getSummonerByName);
 
 router.post('/api/tournaments/register', register_api.registerTournament);
 
