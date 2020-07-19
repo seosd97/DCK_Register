@@ -22,7 +22,7 @@ searchButton.onclick = (e) => {
   searchButton.disabled = true;
   setErrorText('');
 
-  fetch(`/lol/summoners/by_name/${encodeURI(name)}`, {
+  fetch(`/api/lol/summoners/by_name/${encodeURI(name)}`, {
     method: 'GET',
   })
     .then(async (res) => {
@@ -92,7 +92,7 @@ registerSubmit.onclick = (e) => {
 };
 
 const requestRegister = async (data) => {
-  return fetch('/summoners/register', {
+  return fetch('/api/summoners/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const requestRegister = async (data) => {
 };
 
 const requestUnRegister = async (data) => {
-  return fetch('/summoners/unregister', {
+  return fetch('/api/summoners/unregister', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
