@@ -1,4 +1,11 @@
 <section class="flex-col flex-ac summoner-info-container anm-show-up">
+    <% const tierValue = { "IRON": 0, "BRONZE": 1, "SILVER": 2, "GOLD": 3, "PLATINUM": 4, "DIAMOND": 5, "MASTER": 6, "GRANDMASTER": 7, "CHALLENGER": 8 } %>
+    <% summoners.sort((s1, s2) => {
+    if (s1.leagueDto === undefined || s2.leagueDto === undefined) {
+        return -1;
+    }
+        return tierValue[s2.leagueDto.tier] - tierValue[s1.leagueDto.tier]
+    }) %>
     <% summoners.forEach((s) => { %>
     <div class="flex-row flex-ac flex-jc w-100 summoner-info-elem">
         <img class="summoner-info-posicon" src=<%=`images/positions/position_icon_${s.desiredPosition}.png`%>
